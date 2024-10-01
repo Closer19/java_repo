@@ -13,23 +13,23 @@ import java.sql.PreparedStatement;
 
 public class DBManager {
 	
-	private String driver="com.mysql.cj.jdbc.Driver";
-	private String url="jdbc:mysql://127.0.0.1:3306/cookdb?serverTimeZone=UTC";
-	private String id="root";
-	private String pw="1234";
+	private static String driver="com.mysql.cj.jdbc.Driver";
+	private static String url="jdbc:mysql://127.0.0.1:3306/cookdb?serverTimeZone=UTC";
+	private static String id="root";
+	private static String pw="1234";
 	
-	private Connection conn=null;
-	private Statement stmt=null;
+	private static Connection conn=null;
+	private static Statement stmt=null;
 
 	public DBManager() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void initDBConnect() {
+	public static void initDBConnect() {
 		try {
 			Class.forName(driver);
-			this.conn=DriverManager.getConnection(this.url, this.id, this.pw);
-			this.stmt=conn.createStatement();
+			DBManager.conn=DriverManager.getConnection(DBManager.url, DBManager.id, DBManager.pw);
+			DBManager.stmt=conn.createStatement();
 			
 		}catch(ClassNotFoundException e) {
 			e.printStackTrace();	
@@ -37,7 +37,7 @@ public class DBManager {
 			e.printStackTrace();
 		}
 	}
-	public int recordCount() {
+	public static int recordCount() {
 		String sql="select count(*) as cnt from usertbl";
 		int recount=0;
 		try {
@@ -53,8 +53,8 @@ public class DBManager {
 		return recount;
 	}
 	
-	public User[] allFetch() {
-		int recount=this.recordCount();
+	public static User[] allFetch() {
+		int recount=DBManager.recordCount();
 		User[] userList=new User[recount];
 		int userCount=0;
 		String sql="select * from usertbl";
@@ -80,13 +80,13 @@ public class DBManager {
 		return userList;
 	}
 	
-	public void selectUser(String username) {
+	public static void selectUser(String username) {
 //		String sql="select * from usertbl where username='"+username+"'";
 		String sql="select * from usertbl where username=?";
 		
 		try {			
-//			ResultSet rs=this.stmt.executeQuery(sql);
-			PreparedStatement pstmt=this.conn.prepareStatement(sql);
+//			ResultSet rs=DBManager.stmt.executeQuery(sql);
+			PreparedStatement pstmt=DBManager.conn.prepareStatement(sql);
 			pstmt.setString(1, username);
 			ResultSet rs=pstmt.executeQuery();
 			
@@ -111,10 +111,10 @@ public class DBManager {
 		
 	}
 	
-	public void inputUser(User user) {
+	public static void inputUser(User user) {
 		String sql="insert into usertbl values(?,?,?,?,?,?,?,?)";
 		try {
-			PreparedStatement pstmt=this.conn.prepareStatement(sql);
+			PreparedStatement pstmt=DBManager.conn.prepareStatement(sql);
 			pstmt.setString(1, user.getUserId());
 			pstmt.setString(2, user.getUserName());
 			pstmt.setInt(3, user.getBirthYear());
@@ -131,10 +131,10 @@ public class DBManager {
 		
 	}
 	
-	public void releaseDB() {
+	public static void releaseDB() {
 		try {
-			this.conn.close();
-			this.stmt.close();			
+			DBManager.conn.close();
+			DBManager.stmt.close();			
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}

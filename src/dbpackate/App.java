@@ -4,10 +4,9 @@ import java.sql.Date;
 
 public class App {
 
-	public static void main(String[] args) {
-		DBManager manager=new DBManager();
-		manager.initDBConnect();
-		User[] userList=manager.allFetch();
+	public static void main(String[] args) {		
+		DBManager.initDBConnect();
+		User[] userList=DBManager.allFetch();
 		for(int i=0; i<userList.length;i++) {
 			System.out.println(userList[i].getUserId());
 			System.out.println(userList[i].getUserName());
@@ -15,12 +14,12 @@ public class App {
 			System.out.println(userList[i].getBirthYear());
 		}
 		System.out.println("=======================");
-		manager.selectUser("유재석");
+		DBManager.selectUser("유재석");
 		
-		manager.inputUser(new User("hcg", "홍창기", 2000, "서울", null, 
+		DBManager.inputUser(new User("hcg", "홍창기", 2000, "서울", null, 
 				null, 193, Date.valueOf("2024-09-27")));
 		
-		manager.releaseDB();
+		DBManager.releaseDB();
 	}
 
 }
